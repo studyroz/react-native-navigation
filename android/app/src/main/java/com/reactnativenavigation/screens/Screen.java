@@ -115,6 +115,10 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
         }
     }
 
+    public void updateBottomTabsVisibility(boolean hidden) {
+        styleParams.bottomTabsHidden = hidden;
+    }
+
     private void createViews() {
         createAndAddTopBar();
         createTitleBar();
