@@ -12,6 +12,11 @@
 
 - (instancetype)initWithComponentName:(NSString *__nonnull)component passProps:(NSDictionary *)passProps bridge:(RCTBridge *__nonnull)bridge {
     RCTRootView *reactView = [[RCTRootView alloc] initWithBridge:bridge moduleName:component initialProperties:passProps];
+    NSDictionary *initialSize = passProps[@"initialSize"];
+    if (initialSize) {
+        CGSize size = CGSizeMake([initialSize[@"width"] doubleValue], [initialSize[@"height"] doubleValue]);
+        reactView.bounds = CGRectMake(0.0, 0.0, size.width, size.height);
+    }
     self = [super initWithCustomView:reactView];
     if (self) {
         reactView.sizeFlexibility = RCTRootViewSizeFlexibilityWidthAndHeight;
@@ -22,9 +27,9 @@
 }
 
 - (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
-    CGSize size = rootView.intrinsicContentSize;
-    rootView.frame = CGRectMake(0, 0, size.width, size.height);
-    self.width = size.width;
+    /* CGSize size = rootView.intrinsicContentSize; */
+    /* rootView.frame = CGRectMake(0, 0, size.width, size.height); */
+    /* self.width = size.width; */
 }
 
 @end
