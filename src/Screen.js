@@ -28,7 +28,7 @@ class Navigator {
 
   push(params = {}) {
     const now = Date.now()
-    if (now - this._recentPushTimestamp) < 800) {
+    if (now - this._recentPushTimestamp < 800) {
       console.log("push called to frequently. Ignored !")
     } else {
       this._recentPushTimestamp = now
