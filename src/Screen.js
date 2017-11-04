@@ -16,6 +16,8 @@ const NavigationSpecific = {
 };
 
 class Navigator {
+  _recentPushTimestamp = 0
+  _recentShowTimestamp = 0
   constructor(navigatorID, navigatorEventID, screenInstanceID) {
     this.navigatorID = navigatorID;
     this.screenInstanceID = screenInstanceID;
@@ -25,7 +27,13 @@ class Navigator {
   }
 
   push(params = {}) {
-    return NavigationSpecific.push(this, params);
+    const now = Date.now()
+    if (now - this._recentPushTimestamp) < 800) {
+      console.log("push called to frequently. Ignored !")
+    } else {
+      this._recentPushTimestamp = now
+      return NavigationSpecific.push(this, params);
+    }
   }
 
   pop(params = {}) {
@@ -41,7 +49,13 @@ class Navigator {
   }
 
   showModal(params = {}) {
-    return Navigation.showModal(params);
+    const now = Date.now()
+    if (now - this._recentShowTimestamp < 800) {
+      console.log("showModal called to frequently. Ignored !")
+    } else {
+      this._recentShowTimestamp = now
+      return Navigation.showModal(params);
+    }
   }
 
   showLightBox(params = {}) {
