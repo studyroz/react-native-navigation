@@ -269,7 +269,31 @@
         if ([viewController.tabBarItem respondsToSelector:@selector(badgeColor)]) {
           viewController.tabBarItem.badgeColor = color;
         }
-        viewController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%@", badge];
+        
+        BOOL isDot = [badge isEqual:@"BADGE_DOT"];
+        if (isDot) {
+          viewController.tabBarItem.badgeValue = @" ";
+        } else {
+          viewController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%@", badge];
+        }
+        
+        UIView *tabButton = nil;
+        NSUInteger iterator = 0;
+        for (UIView *view in self.tabBar.subviews) {
+          if ([NSStringFromClass(view.class) isEqualToString:@"UITabBarButton"]) {
+            if (iterator == tabIndex.integerValue) {
+              tabButton = view;
+              break;
+            }
+            iterator += 1;
+          }
+        }
+        
+        for (UIView *view in tabButton.subviews) {
+          if ([view isKindOfClass:NSClassFromString(@"_UIBadgeView")]) {
+            view.transform = isDot ? CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5) : CGAffineTransformIdentity;
+          }
+        }
       }
     }
   }
