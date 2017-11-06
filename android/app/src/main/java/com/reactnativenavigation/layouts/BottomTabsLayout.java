@@ -8,7 +8,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.facebook.react.bridge.Arguments;
@@ -42,6 +45,7 @@ import com.reactnativenavigation.views.SnackbarAndFabContainer;
 import com.reactnativenavigation.views.slidingOverlay.SlidingOverlay;
 import com.reactnativenavigation.views.slidingOverlay.SlidingOverlaysQueue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -516,11 +520,63 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
     }
 
     public void setBottomTabBadgeByIndex(Integer index, String badge) {
-        bottomTabs.setNotification(badge, index);
+        if (badge.equals("BADGE_DOT")) {
+            List<TextView> list = new ArrayList<>();
+            bottomTabs.setNotification(" ", index);
+            getButtons(bottomTabs, list);
+
+            if (list.size() >= index) {
+                setDotStyle(list.get(index));
+            }
+        } else {
+            bottomTabs.setNotification(badge, index);
+        }
     }
 
     public void setBottomTabBadgeByNavigatorId(String navigatorId, String badge) {
-        bottomTabs.setNotification(badge, getScreenStackIndex(navigatorId));
+        if (badge.equals("BADGE_DOT")) {
+            List<TextView> list = new ArrayList<>();
+            bottomTabs.setNotification(" ", getScreenStackIndex(navigatorId));
+            getButtons(bottomTabs, list);
+
+            if (list.size() >= getScreenStackIndex(navigatorId)) {
+                setDotStyle(list.get(getScreenStackIndex(navigatorId)));
+            }
+        } else {
+            bottomTabs.setNotification(badge, getScreenStackIndex(navigatorId));
+        }
+    }
+
+    private List<TextView> getButtons(ViewGroup viewGroup, List<TextView> list) {
+        if (viewGroup == null) {
+            return list;
+        }
+
+        int count = viewGroup.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View view = viewGroup.getChildAt(i);
+            // i == 2 hard code
+            if (view instanceof TextView && i == 2) {
+                list.add((TextView) view);
+            } else if (view instanceof ViewGroup) {
+                this.getButtons((ViewGroup) view, list);
+            }
+        }
+
+        return list;
+    }
+
+    private void setDotStyle(TextView tv) {
+        if (tv == null)
+            return ;
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) tv.getLayoutParams();
+        float density = getResources().getDisplayMetrics().density;
+
+        params.height = (int) (8 * density);
+        params.width = (int) (8 * density);
+        params.setMargins((int) (12 * density), (int) (7 * density), 0, 0);
+        tv.setLayoutParams(params);
+
     }
 
     public void setBottomTabButtonByIndex(Integer index, ScreenParams params) {
