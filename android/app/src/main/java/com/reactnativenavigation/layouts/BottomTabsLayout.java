@@ -66,6 +66,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
     SideMenu sideMenu;
     private int currentStackIndex = 0;
     private LightBox lightBox;
+    private FrameLayout.LayoutParams originDotParams;
 
     public BottomTabsLayout(AppCompatActivity activity, ActivityParams params) {
         super(activity);
@@ -520,8 +521,8 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
     }
 
     public void setBottomTabBadgeByIndex(Integer index, String badge) {
+        List<TextView> list = new ArrayList<>();
         if (badge.equals("BADGE_DOT")) {
-            List<TextView> list = new ArrayList<>();
             bottomTabs.setNotification(" ", index);
             getButtons(bottomTabs, list);
 
@@ -530,12 +531,16 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
             }
         } else {
             bottomTabs.setNotification(badge, index);
+            getButtons(bottomTabs, list);
+            if (list.size() >= index) {
+                restoreStyle(list.get(index));
+            }
         }
     }
 
     public void setBottomTabBadgeByNavigatorId(String navigatorId, String badge) {
+        List<TextView> list = new ArrayList<>();
         if (badge.equals("BADGE_DOT")) {
-            List<TextView> list = new ArrayList<>();
             bottomTabs.setNotification(" ", getScreenStackIndex(navigatorId));
             getButtons(bottomTabs, list);
 
@@ -544,6 +549,11 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
             }
         } else {
             bottomTabs.setNotification(badge, getScreenStackIndex(navigatorId));
+            getButtons(bottomTabs, list);
+
+            if (list.size() >= getScreenStackIndex(navigatorId)) {
+                restoreStyle(list.get(getScreenStackIndex(navigatorId)));
+            }
         }
     }
 
@@ -570,13 +580,43 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
         if (tv == null)
             return ;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) tv.getLayoutParams();
+
+        // 保存旧的style
+        if (originDotParams == null) {
+            originDotParams = cloneMarginLayoutParams(params);
+        }
         float density = getResources().getDisplayMetrics().density;
 
         params.height = (int) (8 * density);
         params.width = (int) (8 * density);
         params.setMargins((int) (12 * density), (int) (7 * density), 0, 0);
         tv.setLayoutParams(params);
+    }
 
+    // api 19 有系统函数支持，目前minTarget 为 16
+    private FrameLayout.LayoutParams cloneMarginLayoutParams(MarginLayoutParams source) {
+        FrameLayout.LayoutParams temp = new FrameLayout.LayoutParams(source.width, source.height);
+
+        temp.leftMargin = source.leftMargin;
+        temp.topMargin = source.topMargin;
+        temp.rightMargin = source.rightMargin;
+        temp.bottomMargin = source.bottomMargin;
+
+        return temp;
+    }
+
+    private void restoreStyle(TextView tv) {
+        if (tv == null && originDotParams == null)
+            return ;
+
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) tv.getLayoutParams();
+
+        params.height = originDotParams.height;
+        params.width = originDotParams.width;
+        params.setMargins(originDotParams.leftMargin, originDotParams.topMargin,
+                originDotParams.rightMargin , originDotParams.bottomMargin);
+
+        tv.setLayoutParams(params);
     }
 
     public void setBottomTabButtonByIndex(Integer index, ScreenParams params) {
