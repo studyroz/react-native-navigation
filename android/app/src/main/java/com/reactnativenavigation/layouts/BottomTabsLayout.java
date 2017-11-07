@@ -606,7 +606,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
     }
 
     private void restoreStyle(TextView tv) {
-        if (tv == null && originDotParams == null)
+        if (tv == null || originDotParams == null)
             return ;
 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) tv.getLayoutParams();
