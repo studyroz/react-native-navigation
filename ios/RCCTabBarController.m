@@ -290,7 +290,7 @@
         }
         
         for (UIView *view in tabButton.subviews) {
-          if ([view isKindOfClass:NSClassFromString(@"_UIBadgeView")]) {
+          if ([NSStringFromClass(view.class) rangeOfString:@"Badge"].location != NSNotFound) {
             view.transform = isDot ? CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5) : CGAffineTransformIdentity;
           }
         }
