@@ -274,7 +274,19 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     BOOL animated = actionParams[@"animated"] ? [actionParams[@"animated"] boolValue] : YES;
     NSString *side = actionParams[@"side"] ? actionParams[@"side"] : @"left";
     
-    [self setButtons:buttons viewController:self.topViewController side:side animated:animated];
+    UIViewController *resultVC = nil;
+    for (NSInteger i = self.viewControllers.count - 1; i >= 0; i--) {
+      if ([self.viewControllers[i] isKindOfClass:RCCViewController.class]) {
+        RCCViewController *vc = self.viewControllers[i];
+        if (vc.controllerId && [actionParams[@"screenInstanceID"] isEqualToString:vc.controllerId]) {
+          resultVC = vc;
+          break;
+        }
+      }
+    }
+    if (resultVC) {
+      [self setButtons:buttons viewController:resultVC side:side animated:animated];
+    }
     return;
   }
   

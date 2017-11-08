@@ -205,14 +205,14 @@ var Controllers = {
       setLeftButton: function () {
         console.error('setLeftButton is deprecated, see setLeftButtons');
       },
-      setLeftButtons: function (buttons, animated = false) {
+      setLeftButtons: function (buttons, screenInstanceID, animated = false) {
         var unsubscribe = _processButtons(buttons);
-        RCCManager.NavigationControllerIOS(id, "setButtons", {buttons: buttons, side: "left", animated: animated});
+        RCCManager.NavigationControllerIOS(id, "setButtons", {buttons: buttons, side: "left", animated: animated, screenInstanceID});
         return unsubscribe;
       },
       setRightButtons: function (buttons, animated = false) {
         var unsubscribe = _processButtons(buttons);
-        RCCManager.NavigationControllerIOS(id, "setButtons", {buttons: buttons, side: "right", animated: animated});
+        RCCManager.NavigationControllerIOS(id, "setButtons", {buttons: buttons, side: "right", animated: animated, screenInstanceID});
         return unsubscribe;
       },
       setHidden: function(params = {}) {

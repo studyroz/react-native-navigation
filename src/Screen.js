@@ -87,7 +87,7 @@ class Navigator {
   }
 
   setButtons(params = {}) {
-    return platformSpecific.navigatorSetButtons(this, this.navigatorEventID, params);
+    return platformSpecific.navigatorSetButtons(this, this.navigatorEventID, params, this.screenInstanceID);
   }
 
   setTitle(params = {}) {

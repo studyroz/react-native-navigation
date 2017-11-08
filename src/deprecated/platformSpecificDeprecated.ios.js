@@ -442,20 +442,20 @@ function navigatorSwitchToTab(navigator, params) {
   }
 }
 
-function navigatorSetButtons(navigator, navigatorEventID, params) {
+function navigatorSetButtons(navigator, navigatorEventID, params, screenInstanceID) {
   if (params.leftButtons) {
     const buttons = params.leftButtons.slice(); // clone
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].onPress = navigatorEventID;
     }
-    Controllers.NavigationControllerIOS(navigator.navigatorID).setLeftButtons(buttons, params.animated);
+    Controllers.NavigationControllerIOS(navigator.navigatorID).setLeftButtons(buttons, screenInstanceID, params.animated);
   }
   if (params.rightButtons) {
     const buttons = params.rightButtons.slice(); // clone
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].onPress = navigatorEventID;
     }
-    Controllers.NavigationControllerIOS(navigator.navigatorID).setRightButtons(buttons, params.animated);
+    Controllers.NavigationControllerIOS(navigator.navigatorID).setRightButtons(buttons, screenInstanceID, params.animated);
   }
 }
 
