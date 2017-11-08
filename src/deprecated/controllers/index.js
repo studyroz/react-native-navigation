@@ -210,7 +210,7 @@ var Controllers = {
         RCCManager.NavigationControllerIOS(id, "setButtons", {buttons: buttons, side: "left", animated: animated, screenInstanceID});
         return unsubscribe;
       },
-      setRightButtons: function (buttons, animated = false) {
+      setRightButtons: function (buttons, screenInstanceID, animated = false) {
         var unsubscribe = _processButtons(buttons);
         RCCManager.NavigationControllerIOS(id, "setButtons", {buttons: buttons, side: "right", animated: animated, screenInstanceID});
         return unsubscribe;
