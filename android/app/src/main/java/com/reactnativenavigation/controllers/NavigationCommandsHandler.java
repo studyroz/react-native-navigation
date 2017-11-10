@@ -8,6 +8,7 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 import com.reactnativenavigation.NavigationApplication;
+import com.reactnativenavigation.R;
 import com.reactnativenavigation.params.ActivityParams;
 import com.reactnativenavigation.params.ContextualMenuParams;
 import com.reactnativenavigation.params.FabParams;
@@ -47,17 +48,32 @@ public class NavigationCommandsHandler {
         NavigationApplication.instance.startActivity(intent);
     }
 
-    public static void push(Bundle screenParams) {
+    public static void push(final Bundle screenParams) {
         final NavigationActivity currentActivity = NavigationActivity.currentActivity;
         if (currentActivity == null) {
             return;
         }
-
+        final boolean useNewAct = screenParams.getBoolean("startNewActivity",false);
         final ScreenParams params = ScreenParamsParser.parse(screenParams);
         NavigationApplication.instance.runOnMainThread(new Runnable() {
             @Override
             public void run() {
-                currentActivity.push(params);
+                if(!useNewAct) {
+                    currentActivity.push(params);
+                }else {
+                    String animationType = screenParams.getString("animationType");
+                    Intent intent = new Intent(NavigationApplication.instance, NavigationActivity.class);
+                    IntentDataHandler.onStartApp(intent);
+                    Bundle bundle = new Bundle();
+                    bundle.putBundle("screen", screenParams);
+                    intent.putExtra(ACTIVITY_PARAMS_BUNDLE, bundle);
+                    intent.putExtra("animationType", screenParams.getString("animationType"));
+                    NavigationApplication.instance.startActivity(intent);
+                    if(animationType != null && "slide-horizontal".equals(animationType)){
+                        currentActivity.overridePendingTransition(R.anim.slide_in_right,android.R.anim.fade_out);
+                    }
+
+                }
             }
         });
     }

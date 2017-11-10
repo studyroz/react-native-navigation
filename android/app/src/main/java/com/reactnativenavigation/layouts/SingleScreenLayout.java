@@ -328,7 +328,11 @@ public class SingleScreenLayout extends BaseLayout {
             return leftButtonOnClickListener.onTitleBarBackButtonClick();
         }
 
-        return onBackPressed();
+        if(!onBackPressed()){
+            getActivity().onBackPressed();
+            return true;
+        }
+        return false;
     }
 
     @Override

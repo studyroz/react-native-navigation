@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Window;
 
@@ -16,6 +17,7 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.reactnativenavigation.NavigationApplication;
+import com.reactnativenavigation.R;
 import com.reactnativenavigation.events.Event;
 import com.reactnativenavigation.events.EventBus;
 import com.reactnativenavigation.events.JsDevReloadEvent;
@@ -174,6 +176,9 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     public void invokeDefaultOnBackPressed() {
         if (layout != null && !layout.onBackPressed()) {
             super.onBackPressed();
+            if(TextUtils.equals(getIntent().getStringExtra("animationType"),"slide-horizontal")){
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_out_right);
+            }
         }
     }
 
@@ -186,6 +191,9 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
             getReactGateway().onBackPressed();
         } else {
             super.onBackPressed();
+            if(TextUtils.equals(getIntent().getStringExtra("animationType"),"slide-horizontal")){
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_out_right);
+            }
         }
     }
 

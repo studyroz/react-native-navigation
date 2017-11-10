@@ -78,6 +78,7 @@ function navigatorPush(navigator, params) {
   let adapted = adaptNavigationStyleToScreenStyle(params);
   adapted = adaptNavigationParams(adapted);
   adapted.overrideBackPress = params.overrideBackPress;
+  adapted.startNewActivity = params.startNewActivity;
   adapted.timestamp = Date.now();
 
   newPlatformSpecific.push(adapted);
