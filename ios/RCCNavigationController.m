@@ -278,7 +278,9 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     for (NSInteger i = self.viewControllers.count - 1; i >= 0; i--) {
       if ([self.viewControllers[i] isKindOfClass:RCCViewController.class]) {
         RCCViewController *vc = self.viewControllers[i];
-        if (vc.controllerId && [actionParams[@"screenInstanceID"] isEqualToString:vc.controllerId]) {
+        if (vc.controllerId &&
+            ([actionParams[@"screenInstanceID"] isEqualToString:vc.controllerId] ||
+             [actionParams[@"navigatorID"] isEqualToString:vc.controllerId])) {
           resultVC = vc;
           break;
         }
