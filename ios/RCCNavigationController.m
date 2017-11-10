@@ -37,6 +37,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   RCCViewController *viewController = [[RCCViewController alloc] initWithComponent:component passProps:passProps navigatorStyle:navigatorStyle globalProps:globalProps bridge:bridge];
   if (!viewController) return nil;
   viewController.controllerId = props[@"id"];
+  viewController.screenInstanceId = passProps[@"screenInstanceID"];
   
   NSArray *leftButtons = props[@"leftButtons"];
   if (leftButtons)
@@ -116,6 +117,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     
     RCCViewController *viewController = [[RCCViewController alloc] initWithComponent:component passProps:passProps navigatorStyle:navigatorStyle globalProps:nil bridge:bridge];
     viewController.controllerId = passProps[@"screenInstanceID"];
+    viewController.screenInstanceId = passProps[@"screenInstanceID"];
     
     [self processTitleView:viewController
                      props:actionParams
@@ -230,6 +232,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     
     RCCViewController *viewController = [[RCCViewController alloc] initWithComponent:component passProps:passProps navigatorStyle:navigatorStyle globalProps:nil bridge:bridge];
     viewController.controllerId = passProps[@"screenInstanceID"];
+    viewController.screenInstanceId = passProps[@"screenInstanceID"];
     
     viewController.navigationItem.hidesBackButton = YES;
     
@@ -278,9 +281,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
     for (NSInteger i = self.viewControllers.count - 1; i >= 0; i--) {
       if ([self.viewControllers[i] isKindOfClass:RCCViewController.class]) {
         RCCViewController *vc = self.viewControllers[i];
-        if (vc.controllerId &&
-            ([actionParams[@"screenInstanceID"] isEqualToString:vc.controllerId] ||
-             [actionParams[@"navigatorID"] isEqualToString:vc.controllerId])) {
+        if (vc.screenInstanceId && [actionParams[@"screenInstanceID"] isEqualToString:vc.screenInstanceId]) {
           resultVC = vc;
           break;
         }
