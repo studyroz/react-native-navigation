@@ -589,7 +589,9 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
 
         params.height = (int) (8 * density);
         params.width = (int) (8 * density);
-        params.setMargins((int) (12 * density), (int) (7 * density), 0, 0);
+
+        // bug 暂时不改变位置
+//        params.setMargins((int) (12 * density), (int) (7 * density), 0, 0);
         tv.setLayoutParams(params);
     }
 
