@@ -532,7 +532,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
         } else {
             bottomTabs.setNotification(badge, index);
             getButtons(bottomTabs, list);
-            if (list.size() >= index) {
+            if (list.size() >= index && !badge.equals("")) {
                 restoreStyle(list.get(index));
             }
         }
@@ -551,7 +551,7 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
             bottomTabs.setNotification(badge, getScreenStackIndex(navigatorId));
             getButtons(bottomTabs, list);
 
-            if (list.size() >= getScreenStackIndex(navigatorId)) {
+            if (list.size() >= getScreenStackIndex(navigatorId) && !badge.equals("")) {
                 restoreStyle(list.get(getScreenStackIndex(navigatorId)));
             }
         }
