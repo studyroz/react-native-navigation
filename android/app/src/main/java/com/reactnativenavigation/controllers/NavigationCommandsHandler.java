@@ -70,7 +70,7 @@ public class NavigationCommandsHandler {
                     intent.putExtra("animationType", screenParams.getString("animationType"));
                     NavigationApplication.instance.startActivity(intent);
                     if(animationType != null && "slide-horizontal".equals(animationType)){
-                        currentActivity.overridePendingTransition(R.anim.slide_in_right,android.R.anim.fade_out);
+                        currentActivity.overridePendingTransition(R.anim.slide_in_right,R.anim.fade_out);
                     }
 
                 }

@@ -177,7 +177,7 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         if (layout != null && !layout.onBackPressed()) {
             super.onBackPressed();
             if(TextUtils.equals(getIntent().getStringExtra("animationType"),"slide-horizontal")){
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_out_right);
+                overridePendingTransition(R.anim.fade_in, R.anim.slide_out_right);
             }
         }
     }
@@ -192,7 +192,7 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         } else {
             super.onBackPressed();
             if(TextUtils.equals(getIntent().getStringExtra("animationType"),"slide-horizontal")){
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_out_right);
+                overridePendingTransition(R.anim.fade_in, R.anim.slide_out_right);
             }
         }
     }
