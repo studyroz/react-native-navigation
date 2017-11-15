@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
@@ -72,7 +73,9 @@ public class ScreenStack {
     private void removeElementsBelowTop() {
         while (stack.size() > 1) {
             Screen screen = stack.get(0);
-            parent.removeView(screen);
+            if(screen.getParent() != null) {
+                parent.removeView(screen);
+            }
             screen.destroy();
             stack.remove(0);
         }
@@ -131,7 +134,9 @@ public class ScreenStack {
                     public void run() {
                         if (onDisplay != null) onDisplay.onDisplay();
                         NavigationApplication.instance.getEventEmitter().sendDidDisappearEvent(previousScreen.getScreenParams(), NavigationType.Push);
-                        parent.removeView(previousScreen);
+                        if(previousScreen.getParent() != null) {
+                            parent.removeView(previousScreen);
+                        }
                     }
                 }, NavigationType.Push);
             }
@@ -146,7 +151,9 @@ public class ScreenStack {
                 nextScreen.showWithSharedElementsTransitions(previousScreen.sharedElements.getToElements(), new Runnable() {
                     @Override
                     public void run() {
-                        parent.removeView(previousScreen);
+                        if(previousScreen.getParent() != null) {
+                            parent.removeView(previousScreen);
+                        }
                     }
                 });
             }
@@ -157,7 +164,9 @@ public class ScreenStack {
     private void pushScreenToInvisibleStack(LayoutParams layoutParams, Screen nextScreen, Screen previousScreen) {
         nextScreen.setVisibility(View.INVISIBLE);
         addScreen(nextScreen, layoutParams);
-        parent.removeView(previousScreen);
+        if(previousScreen.getParent() != null) {
+            parent.removeView(previousScreen);
+        }
     }
 
     private void addScreen(Screen screen, LayoutParams layoutParams) {
@@ -213,7 +222,9 @@ public class ScreenStack {
             @Override
             public void run() {
                 toRemove.destroy();
-                parent.removeView(toRemove);
+                if(toRemove.getParent() != null) {
+                    parent.removeView(toRemove);
+                }
                 NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(previous.getScreenParams(), NavigationType.Pop);
             }
         };
@@ -230,7 +241,11 @@ public class ScreenStack {
 
     private void readdPrevious(Screen previous) {
         previous.setVisibility(View.VISIBLE);
-        parent.addView(previous, 0);
+        if(previous.getParent() != null) {
+            ((ViewGroup) previous.getParent()).removeView(previous);
+        }
+        parent.addView(previous, parent.getChildCount() >= 2 ? parent.getChildCount() - 2 : 0);
+
     }
 
     public void popToRoot(final boolean animated, final double jsPopTimestamp, @Nullable final OnScreenPop onScreenPop) {
@@ -261,13 +276,31 @@ public class ScreenStack {
     public void destroy() {
         for (Screen screen : stack) {
             screen.destroy();
-            parent.removeView(screen);
+            if(screen.getParent() != null) {
+                parent.removeView(screen);
+            }
         }
         stack.clear();
     }
 
     public boolean canPop() {
-        return stack.size() > 1 && !isPreviousScreenAttachedToWindow();
+        return stack.size() > 1 && (!isPreviousScreenAttachedToWindow() || canForcePop());
+    }
+
+    private boolean canForcePop() {
+        Log.w(TAG, "check can force pop");
+        if( stack.size() > 1){
+            Screen previousScreen = stack.get(stack.size() - 2);
+            if (previousScreen.getParent() != null) {
+                Log.w(TAG, "force POP!!");
+                // prepare for force pop
+                previousScreen.destroy();
+                ((ViewGroup)previousScreen.getParent()).removeView(previousScreen);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean isPreviousScreenAttachedToWindow() {
