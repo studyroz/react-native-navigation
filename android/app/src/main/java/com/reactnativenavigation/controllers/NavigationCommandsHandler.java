@@ -64,6 +64,7 @@ public class NavigationCommandsHandler {
                     String animationType = screenParams.getString("animationType");
                     Intent intent = new Intent(NavigationApplication.instance, NavigationActivity.class);
                     IntentDataHandler.onStartApp(intent);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     Bundle bundle = new Bundle();
                     bundle.putBundle("screen", screenParams);
                     intent.putExtra(ACTIVITY_PARAMS_BUNDLE, bundle);
