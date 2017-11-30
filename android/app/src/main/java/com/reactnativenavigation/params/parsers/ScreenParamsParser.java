@@ -22,6 +22,7 @@ public class ScreenParamsParser extends Parser {
     private static final String FRAGMENT_CREATOR_CLASS_NAME = "fragmentCreatorClassName";
     private static final String FRAGMENT_CREATOR_PASS_PROPS = "fragmentCreatorPassProps";
     private static final String OVERRIDE_BACK_PRESS = "overrideBackPress";
+    private static final String IGNORE_OVERRIDE_BACK_PRESS = "ignoreOverrideBackPress";
     private static final String ANIMATION_TYPE = "animationType";
 
     @SuppressWarnings("ConstantConditions")
@@ -38,6 +39,7 @@ public class ScreenParamsParser extends Parser {
         result.subtitle = params.getString(KEY_SUBTITLE);
         result.rightButtons = ButtonParser.parseRightButton(params);
         result.overrideBackPressInJs = params.getBoolean(OVERRIDE_BACK_PRESS, false);
+        result.popIgnoreOverrideBackPressInJs = params.getBoolean(IGNORE_OVERRIDE_BACK_PRESS, false);
         result.leftButton = ButtonParser.parseLeftButton(params);
 
         result.topTabParams = parseTopTabs(params);

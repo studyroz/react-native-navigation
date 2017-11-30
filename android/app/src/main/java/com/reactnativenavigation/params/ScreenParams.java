@@ -6,6 +6,7 @@ public class ScreenParams extends BaseScreenParams {
     public String tabLabel;
     public List<PageParams> topTabParams;
     public List<String> sharedElementsTransitions;
+    public boolean popIgnoreOverrideBackPressInJs;
 
     public boolean hasTopTabs() {
         return topTabParams != null && !topTabParams.isEmpty();

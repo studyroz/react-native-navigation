@@ -59,11 +59,14 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     private ActivityParams activityParams;
     private ModalController modalController;
     private Layout layout;
-    @Nullable private PermissionListener mPermissionListener;
+    @Nullable
+    private PermissionListener mPermissionListener;
+    private boolean mFirstCreated = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirstCreated = true;
         if (!NavigationApplication.instance.isReactContextInitialized()) {
             NavigationApplication.instance.startReactContextOnceInBackgroundAndExecuteJS();
             return;
@@ -101,7 +104,7 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
 
     private boolean hasBackgroundColor() {
         return AppStyle.appStyle.screenBackgroundColor != null &&
-               AppStyle.appStyle.screenBackgroundColor.hasColor();
+                AppStyle.appStyle.screenBackgroundColor.hasColor();
     }
 
     @Override
@@ -123,6 +126,11 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         NavigationApplication.instance.getActivityCallbacks().onActivityResumed(this);
         EventBus.instance.register(this);
         IntentDataHandler.onPostResume(getIntent());
+
+        if (layout != null && layout.getCurrentScreen() != null && !mFirstCreated) {
+            NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(layout.getCurrentScreen().getScreenParams(), NavigationType.Push);
+            NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(layout.getCurrentScreen().getScreenParams(), NavigationType.Push);
+        }
     }
 
     @Override
@@ -134,12 +142,30 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
 
     @Override
     protected void onPause() {
+        mFirstCreated = false;
+        if (layout != null && layout.getCurrentScreen() != null) {
+            NavigationApplication.instance.getEventEmitter().sendWillDisappearEvent(layout.getCurrentScreen().getScreenParams(), NavigationType.Pop);
+        }
         super.onPause();
         currentActivity = null;
         IntentDataHandler.onPause(getIntent());
         getReactGateway().onPauseActivity(this);
         NavigationApplication.instance.getActivityCallbacks().onActivityPaused(this);
-        EventBus.instance.unregister(this);
+
+        if (layout != null && layout.getCurrentScreen() != null) {
+            NavigationApplication.instance.getEventEmitter().sendDidDisappearEvent(layout.getCurrentScreen().getScreenParams(), NavigationType.Pop);
+
+            layout.asView().post(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.instance.unregister(NavigationActivity.this);
+                }
+            });
+        } else {
+            EventBus.instance.unregister(NavigationActivity.this);
+        }
+
+
     }
 
     @Override
@@ -176,7 +202,8 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     public void invokeDefaultOnBackPressed() {
         if (layout != null && !layout.onBackPressed()) {
             super.onBackPressed();
-            if(TextUtils.equals(getIntent().getStringExtra("animationType"),"slide-horizontal")){
+            if (TextUtils.equals(getIntent().getStringExtra("animationType"), "slide-horizontal")
+                    || TextUtils.equals(layout.getCurrentScreen().getScreenParams().animationType, "slide-horizontal")) {
                 overridePendingTransition(R.anim.fade_in, R.anim.slide_out_right);
             }
         }
@@ -191,7 +218,8 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
             getReactGateway().onBackPressed();
         } else {
             super.onBackPressed();
-            if(TextUtils.equals(getIntent().getStringExtra("animationType"),"slide-horizontal")){
+            if (TextUtils.equals(getIntent().getStringExtra("animationType"), "slide-horizontal")
+                    || layout != null && TextUtils.equals(layout.getCurrentScreen().getScreenParams().animationType, "slide-horizontal")) {
                 overridePendingTransition(R.anim.fade_in, R.anim.slide_out_right);
             }
         }

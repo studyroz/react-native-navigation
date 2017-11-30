@@ -45,6 +45,8 @@ public class SingleScreenLayout extends BaseLayout {
     private @Nullable SideMenu sideMenu;
     private final SlidingOverlaysQueue slidingOverlaysQueue = new SlidingOverlaysQueue();
     private LightBox lightBox;
+    private ScreenParams curPopParams;
+    private long mLastBackTime;
 
     public SingleScreenLayout(AppCompatActivity activity, SideMenuParams leftSideMenuParams,
                               SideMenuParams rightSideMenuParams, ScreenParams screenParams) {
@@ -124,6 +126,11 @@ public class SingleScreenLayout extends BaseLayout {
 
     @Override
     public boolean handleBackInJs() {
+        // 基于 startNewActivity = true 的情况，有时候 pop 操作需要忽略OverrideBackPressInJs
+        // 否则会出现无法退出当前页面的情况
+        if(curPopParams != null && curPopParams.popIgnoreOverrideBackPressInJs){
+            return false;
+        }
         return stack.handleBackPressInJs();
     }
 
@@ -145,6 +152,7 @@ public class SingleScreenLayout extends BaseLayout {
 
     @Override
     public void push(ScreenParams params) {
+        curPopParams = null;
         stack.push(params, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
         EventBus.instance.post(new ScreenChangedEvent(params));
     }
@@ -159,6 +167,7 @@ public class SingleScreenLayout extends BaseLayout {
                 }
             });
         }else {
+            curPopParams = params;
             getActivity().onBackPressed();
         }
     }
@@ -328,6 +337,12 @@ public class SingleScreenLayout extends BaseLayout {
 
     @Override
     public boolean onTitleBarBackButtonClick() {
+        // 防止快速重复点击
+        if(System.currentTimeMillis() - mLastBackTime < 800) {
+            mLastBackTime = System.currentTimeMillis();
+            return false;
+        }
+        mLastBackTime = System.currentTimeMillis();
         if (leftButtonOnClickListener != null) {
             return leftButtonOnClickListener.onTitleBarBackButtonClick();
         }

@@ -74,7 +74,7 @@ public class ScreenStack {
         while (stack.size() > 1) {
             Screen screen = stack.get(0);
             if(screen.getParent() != null) {
-                parent.removeView(screen);
+                ((ViewGroup)screen.getParent()).removeView(screen);
             }
             screen.destroy();
             stack.remove(0);
@@ -135,7 +135,7 @@ public class ScreenStack {
                         if (onDisplay != null) onDisplay.onDisplay();
                         NavigationApplication.instance.getEventEmitter().sendDidDisappearEvent(previousScreen.getScreenParams(), NavigationType.Push);
                         if(previousScreen.getParent() != null) {
-                            parent.removeView(previousScreen);
+                            ((ViewGroup)previousScreen.getParent()).removeView(previousScreen);
                         }
                     }
                 }, NavigationType.Push);
@@ -152,7 +152,7 @@ public class ScreenStack {
                     @Override
                     public void run() {
                         if(previousScreen.getParent() != null) {
-                            parent.removeView(previousScreen);
+                            ((ViewGroup)previousScreen.getParent()).removeView(previousScreen);
                         }
                     }
                 });
@@ -165,7 +165,7 @@ public class ScreenStack {
         nextScreen.setVisibility(View.INVISIBLE);
         addScreen(nextScreen, layoutParams);
         if(previousScreen.getParent() != null) {
-            parent.removeView(previousScreen);
+            ((ViewGroup)previousScreen.getParent()).removeView(previousScreen);
         }
     }
 
@@ -223,7 +223,7 @@ public class ScreenStack {
             public void run() {
                 toRemove.destroy();
                 if(toRemove.getParent() != null) {
-                    parent.removeView(toRemove);
+                    ((ViewGroup)toRemove.getParent()).removeView(toRemove);
                 }
                 NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(previous.getScreenParams(), NavigationType.Pop);
             }
@@ -236,6 +236,8 @@ public class ScreenStack {
     }
 
     public Screen peek() {
+        if(stack == null || stack.isEmpty()) return null;
+
         return stack.peek();
     }
 
@@ -277,7 +279,7 @@ public class ScreenStack {
         for (Screen screen : stack) {
             screen.destroy();
             if(screen.getParent() != null) {
-                parent.removeView(screen);
+                ((ViewGroup)screen.getParent()).removeView(screen);
             }
         }
         stack.clear();
