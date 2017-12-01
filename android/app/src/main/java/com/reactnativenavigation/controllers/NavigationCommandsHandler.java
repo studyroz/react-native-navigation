@@ -66,6 +66,12 @@ public class NavigationCommandsHandler {
                     IntentDataHandler.onStartApp(intent);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     Bundle bundle = new Bundle();
+
+                    Bundle innerBundle = new Bundle();
+                    // 传入AppStyle中的方向参数， StyleParamsParser.java getDefaultOrientation方法
+                    innerBundle.putCharSequence("orientation", AppStyle.appStyle == null ? null : AppStyle.appStyle.orientation.name);
+                    bundle.putBundle("appStyle", innerBundle);
+                    
                     bundle.putBundle("screen", screenParams);
                     intent.putExtra(ACTIVITY_PARAMS_BUNDLE, bundle);
                     intent.putExtra("animationType", screenParams.getString("animationType"));
