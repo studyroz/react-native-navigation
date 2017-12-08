@@ -4,6 +4,7 @@
 #import "RCCDrawerController.h"
 #import "RCCTheSideBarManagerViewController.h"
 #import <React/RCTRootView.h>
+#import <React/UIView+React.h>
 #import "RCCManager.h"
 #import <React/RCTConvert.h>
 #import <React/RCTEventDispatcher.h>
@@ -27,6 +28,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 @property (nonatomic, strong) NSDictionary *originalNavBarImages;
 @property (nonatomic, strong) UIImageView *navBarHairlineImageView;
 @property (nonatomic, weak) id <UIGestureRecognizerDelegate> originalInteractivePopGestureDelegate;
+@property (nonatomic, strong) NSNumber *tempReactTag;
 @end
 
 @implementation RCCViewController
@@ -174,6 +176,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
 - (void)commonInit:(RCTRootView*)reactView navigatorStyle:(NSDictionary*)navigatorStyle props:(NSDictionary*)props
 {
   self.view = reactView;
+  self.tempReactTag = reactView.reactTag;
   
   self.edgesForExtendedLayout = UIRectEdgeNone; // default
   self.automaticallyAdjustsScrollViewInsets = NO; // default
@@ -306,12 +309,46 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
   
 }
 
+- (void)viewDidLayoutSubviews {
+  [super viewDidLayoutSubviews];
+  
+  RCTRootView *view = (RCTRootView *)self.view;
+  if (!@available(iOS 11, *) &&
+      self.navigationController.childViewControllers.count == 1 &&
+      self.navigationController.childViewControllers.firstObject == self &&
+      view.contentView.reactTag == nil) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      view.contentView.reactTag = self.memorizedReactTag;
+    });
+  }
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
   [super viewDidAppear:animated];
   [self sendGlobalScreenEvent:@"didAppear" endTimestampString:[self getTimestampString] shouldReset:YES];
   [self sendScreenChangedEvent:@"didAppear"];
   
+  // HACK(peter.zhang):
+  // On iOS 10 and prior versions, the -viewDidLayoutSubviews is called twice for
+  // rootViewController in tabBar based app. This behaviour causes yoga calculate
+  // the layout for twice, leading to the UI flickering for 'absolute' positioned
+  // views.
+  //
+  // By setting the reactTag to nil in -viewDidAppear, the redundant yoga layout can
+  // be avoided. Though this is a dirty hack and maybe broken in future version of
+  // react-native. -_-
+  //
+  // The calling sequence is viewDidAppear -> viewDidLayouyt -> viewDidLayout
+  // And the original reactTag is reset back in viewDidLayoutSubview
+  
+  if (!@available(iOS 11, *) &&
+      self.isPopping &&
+      self.navigationController.childViewControllers.count == 1 &&
+      self.navigationController.childViewControllers.firstObject == self) {
+    RCTRootView *view = (RCTRootView *)self.view;
+    view.contentView.reactTag = nil;
+  }
 }
 
 - (void)viewWillAppear:(BOOL)animated

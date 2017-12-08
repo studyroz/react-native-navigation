@@ -19,6 +19,8 @@ extern NSString* const RCCViewControllerCancelReactTouchesNotification;
 @property (nonatomic, strong) NSString *screenInstanceId;
 @property (nonatomic, strong) NSString *commandType;
 @property (nonatomic, strong) NSString *timestamp;
+// Usage: see comment in -[RCCViewController viewDidAppaer]
+@property (nonatomic, assign, getter=isPopping) BOOL popping;
 
 + (UIViewController*)controllerWithLayout:(NSDictionary *)layout globalProps:(NSDictionary *)globalProps bridge:(RCTBridge *)bridge;
 

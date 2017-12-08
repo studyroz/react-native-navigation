@@ -474,10 +474,23 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
 
 -(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
   [viewController setNeedsStatusBarAppearanceUpdate];
+  
+  if ([viewController isKindOfClass:RCCViewController.class] &&
+      navigationController.childViewControllers.count == 1 &&
+      navigationController.childViewControllers.firstObject == viewController) {
+    RCCViewController *vc = (RCCViewController *)viewController;
+    vc.popping = YES;
+  }
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+  if ([viewController isKindOfClass:RCCViewController.class] &&
+      navigationController.childViewControllers.count == 1 &&
+      navigationController.childViewControllers.firstObject == viewController) {
+    RCCViewController *vc = (RCCViewController *)viewController;
+    vc.popping = NO;
+  }
   dispatch_async(dispatch_get_main_queue(), ^{
     _transitioning = NO;
     if ([_queuedViewControllers count] > 0) {
