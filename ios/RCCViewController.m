@@ -318,7 +318,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
       self.navigationController.childViewControllers.firstObject == self &&
       view.contentView.reactTag == nil) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      view.contentView.reactTag = self.memorizedReactTag;
+      view.contentView.reactTag = self.tempReactTag;
     });
   }
 }
