@@ -314,6 +314,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
   
   RCTRootView *view = (RCTRootView *)self.view;
   if (!@available(iOS 11, *) &&
+      self.tabBarController != nil &&
       self.navigationController.childViewControllers.count == 1 &&
       self.navigationController.childViewControllers.firstObject == self &&
       view.contentView.reactTag == nil) {
@@ -343,6 +344,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
   // And the original reactTag is reset back in viewDidLayoutSubview
   
   if (!@available(iOS 11, *) &&
+      self.tabBarController != nil &&
       self.isPopping &&
       self.navigationController.childViewControllers.count == 1 &&
       self.navigationController.childViewControllers.firstObject == self) {
