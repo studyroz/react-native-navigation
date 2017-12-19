@@ -30,6 +30,7 @@ class Navigator {
     const now = Date.now()
     if (now - this._recentPushTimestamp < 800) {
       console.log("push called to frequently. Ignored !")
+      this._recentPushTimestamp = now
     } else {
       this._recentPushTimestamp = now
       return NavigationSpecific.push(this, params);
@@ -52,6 +53,7 @@ class Navigator {
     const now = Date.now()
     if (now - this._recentShowTimestamp < 800) {
       console.log("showModal called to frequently. Ignored !")
+      this._recentShowTimestamp = now
     } else {
       this._recentShowTimestamp = now
       return Navigation.showModal(params);
