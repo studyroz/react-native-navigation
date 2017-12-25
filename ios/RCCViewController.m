@@ -344,6 +344,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
   // And the original reactTag is reset back in viewDidLayoutSubview
   
   if (!@available(iOS 11, *) &&
+      animated &&
       self.tabBarController != nil &&
       self.isPopping &&
       self.navigationController.childViewControllers.count == 1 &&
