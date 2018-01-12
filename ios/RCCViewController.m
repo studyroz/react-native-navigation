@@ -317,6 +317,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
       self.tabBarController != nil &&
       self.navigationController.childViewControllers.count == 1 &&
       self.navigationController.childViewControllers.firstObject == self &&
+      [view isKindOfClass:[RCTRootView class]] &&
       view.contentView.reactTag == nil) {
     dispatch_async(dispatch_get_main_queue(), ^{
       view.contentView.reactTag = self.tempReactTag;
@@ -348,7 +349,8 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
       self.tabBarController != nil &&
       self.isPopping &&
       self.navigationController.childViewControllers.count == 1 &&
-      self.navigationController.childViewControllers.firstObject == self) {
+      self.navigationController.childViewControllers.firstObject == self &&
+      [self.view isKindOfClass:[RCTRootView class]]) {
     RCTRootView *view = (RCTRootView *)self.view;
     view.contentView.reactTag = nil;
   }
