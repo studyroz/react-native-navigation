@@ -31,7 +31,7 @@ public class NavigationCommandsHandler {
         NavigationApplication.instance.startActivity(intent);
     }
 
-    public static void push(Bundle screenParams, final Promise onPushComplete) {
+    public static void push(final Bundle screenParams, final Promise onPushComplete) {
         final NavigationActivity currentActivity = NavigationActivity.currentActivity;
         if (currentActivity == null) {
             return;
