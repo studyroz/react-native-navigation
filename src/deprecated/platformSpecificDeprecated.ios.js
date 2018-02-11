@@ -688,7 +688,7 @@ function _saveNavigatorButtonsPassProps(buttons = []) {
     if (button.component) {
       const passPropsKey = _.uniqueId('customButtonComponent');
       PropRegistry.save(passPropsKey, button.passProps);
-      button.passProps = {passPropsKey};
+      button.passProps = {passPropsKey, ...button.passProps};
     }
   })
 }
