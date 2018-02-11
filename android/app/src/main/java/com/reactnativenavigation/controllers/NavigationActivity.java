@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.Window;
 
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
@@ -40,6 +41,7 @@ import com.reactnativenavigation.react.ReactGateway;
 import com.reactnativenavigation.screens.NavigationType;
 import com.reactnativenavigation.screens.Screen;
 import com.reactnativenavigation.utils.OrientationHelper;
+import com.reactnativenavigation.utils.ReflectionUtils;
 import com.reactnativenavigation.views.SideMenu.Side;
 
 import java.util.List;
@@ -55,6 +57,7 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
      * Along with that, we should handle commands from the bridge using onNewIntent
      */
     static NavigationActivity currentActivity;
+    private static Promise startAppPromise;
 
     private ActivityParams activityParams;
     private ModalController modalController;
@@ -67,8 +70,11 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirstCreated = true;
-        if (!NavigationApplication.instance.isReactContextInitialized()) {
-            NavigationApplication.instance.startReactContextOnceInBackgroundAndExecuteJS();
+        if (!NavigationApplication.instance.getReactGateway().hasStartedCreatingContext() ||
+                getIntent() == null ||
+                getIntent().getBundleExtra("ACTIVITY_PARAMS_BUNDLE") == null) {
+            SplashActivity.start(this);
+            finish();
             return;
         }
 
@@ -123,6 +129,7 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         currentActivity = this;
         IntentDataHandler.onResume(getIntent());
         getReactGateway().onResumeActivity(this, this);
+        resolveStartAppPromiseOnActivityResumed();
         NavigationApplication.instance.getActivityCallbacks().onActivityResumed(this);
         EventBus.instance.register(this);
         IntentDataHandler.onPostResume(getIntent());
@@ -130,6 +137,14 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         if (layout != null && layout.getCurrentScreen() != null && !mFirstCreated) {
             NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(layout.getCurrentScreen().getScreenParams(), NavigationType.Push);
             NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(layout.getCurrentScreen().getScreenParams(), NavigationType.Push);
+				}
+        NavigationApplication.instance.getEventEmitter().sendActivityResumed(getCurrentlyVisibleEventId());
+    }
+
+    private void resolveStartAppPromiseOnActivityResumed() {
+        if (startAppPromise != null) {
+            startAppPromise.resolve(true);
+            startAppPromise = null;
         }
     }
 
@@ -171,7 +186,14 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     @Override
     protected void onStop() {
         super.onStop();
+        clearStartAppPromise();
         NavigationApplication.instance.getActivityCallbacks().onActivityStopped(this);
+    }
+
+    private void clearStartAppPromise() {
+        if (startAppPromise != null) {
+            startAppPromise = null;
+        }
     }
 
     @Override
@@ -248,11 +270,11 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         super.onConfigurationChanged(newConfig);
     }
 
-    void push(ScreenParams params) {
+    void push(ScreenParams params, Promise onPushComplete) {
         if (modalController.containsNavigator(params.getNavigatorId())) {
-            modalController.push(params);
+            modalController.push(params, onPushComplete);
         } else {
-            layout.push(params);
+            layout.push(params, onPushComplete);
         }
     }
 
@@ -469,6 +491,11 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
             public void run() {
                 layout.destroy();
                 modalController.destroy();
+
+                Object devSupportManager = ReflectionUtils.getDeclaredField(getReactGateway().getReactInstanceManager(), "mDevSupportManager");
+                if (ReflectionUtils.getDeclaredField(devSupportManager, "mRedBoxDialog") != null) { // RN >= 0.52
+                    ReflectionUtils.setField(devSupportManager, "mRedBoxDialog", null);
+                }
             }
         });
     }
@@ -489,5 +516,13 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
 
     public String getCurrentlyVisibleScreenId() {
         return modalController.isShowing() ? modalController.getCurrentlyVisibleScreenId() : layout.getCurrentlyVisibleScreenId();
+    }
+
+    public String getCurrentlyVisibleEventId() {
+        return modalController.isShowing() ? modalController.getCurrentlyVisibleEventId() : layout.getCurrentScreen().getNavigatorEventId();
+    }
+
+    public static void setStartAppPromise(Promise promise) {
+        NavigationActivity.startAppPromise = promise;
     }
 }

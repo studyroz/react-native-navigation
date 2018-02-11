@@ -22,6 +22,12 @@ extern NSString* const RCCViewControllerCancelReactTouchesNotification;
 // Usage: see comment in -[RCCViewController viewDidAppaer]
 @property (nonatomic, assign, getter=isPopping) BOOL popping;
 
+@property (nonatomic) RCCViewController *previewController;
+@property (nonatomic) UIView *previewView;
+@property (nonatomic) NSArray *previewActions;
+@property (nonatomic) BOOL previewCommit;
+@property (nonatomic) id previewContext;
+
 + (UIViewController*)controllerWithLayout:(NSDictionary *)layout globalProps:(NSDictionary *)globalProps bridge:(RCTBridge *)bridge;
 
 - (instancetype)initWithProps:(NSDictionary *)props children:(NSArray *)children globalProps:(NSDictionary *)globalProps bridge:(RCTBridge *)bridge;
