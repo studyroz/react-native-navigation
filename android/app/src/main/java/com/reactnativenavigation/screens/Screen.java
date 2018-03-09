@@ -178,7 +178,7 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
     }
 
     private void setStatusBarTextColorScheme(StatusBarTextColorScheme textColorScheme) {
-        StatusBar.setTextColorScheme(this, textColorScheme);
+        StatusBar.setTextColorScheme(((NavigationActivity) activity).getScreenWindow(), textColorScheme);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
