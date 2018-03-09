@@ -130,7 +130,8 @@ class Modal extends Dialog implements DialogInterface.OnDismissListener, ScreenS
     private void setStatusBarStyle(StyleParams styleParams) {
         Window window = getWindow();
         if (window == null) return;
-        StatusBar.setTextColorScheme(window.getDecorView(), styleParams.statusBarTextColorScheme);
+        StatusBar.setColor(window, styleParams.statusBarColor);
+        StatusBar.setTextColorScheme(window, styleParams.statusBarTextColorScheme);
     }
 
     private void setDrawUnderStatusBar(StyleParams styleParams) {
