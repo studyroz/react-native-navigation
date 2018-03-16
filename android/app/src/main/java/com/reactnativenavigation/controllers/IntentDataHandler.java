@@ -37,7 +37,9 @@ class IntentDataHandler {
     static void onPause(@Nullable Intent intent) {
         if (intent != null) {
             intent.setData(null);
-            intent.getExtras().clear();
+            if (intent.getExtras() != null) {
+                intent.getExtras().clear();
+            }
             intent.replaceExtras(Bundle.EMPTY);
         }
         clear();
