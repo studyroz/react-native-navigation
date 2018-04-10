@@ -46,9 +46,6 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
         [self setButtons:leftButtons viewController:viewController side:@"left" animated:NO];
     }
     
-    RCCViewController *viewController = [[RCCViewController alloc] initWithComponent:component passProps:passProps navigatorStyle:navigatorStyle globalProps:nil bridge:bridge];
-    viewController.controllerId = passProps[@"screenInstanceID"];
-    viewController.screenInstanceId = passProps[@"screenInstanceID"];
     NSArray *rightButtons = props[@"rightButtons"];
     if (rightButtons) {
         [self setButtons:rightButtons viewController:viewController side:@"right" animated:NO];
