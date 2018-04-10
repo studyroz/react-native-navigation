@@ -271,7 +271,6 @@
                 if ([viewController.tabBarItem respondsToSelector:@selector(badgeColor)]) {
                     viewController.tabBarItem.badgeColor = color;
                 }
-                viewController.tabBarItem.badgeValue = [NSString stringWithFormat:@"%@", badge];
             }
         }
     }
