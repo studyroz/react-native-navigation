@@ -128,6 +128,7 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
         
         RCCViewController *viewController = [[RCCViewController alloc] initWithComponent:component passProps:passProps navigatorStyle:navigatorStyle globalProps:nil bridge:bridge];
         viewController.controllerId = passProps[@"screenInstanceID"];
+        viewController.screenInstanceId = passProps[@"screenInstanceID"];
         
         [self processTitleView:viewController
                          props:actionParams
