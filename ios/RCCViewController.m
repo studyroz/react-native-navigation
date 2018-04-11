@@ -12,7 +12,15 @@
 #import "RCTHelpers.h"
 #import "RCCTitleViewHelper.h"
 #import "RCCCustomTitleView.h"
+#include <sys/utsname.h>
 
+BOOL isiPhoneX() {
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    
+    NSString *deviceName = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+    return [deviceName isEqualToString:@"iPhone10,3"] || [deviceName isEqualToString:@"iPhone10,6"];
+}
 
 NSString* const RCCViewControllerCancelReactTouchesNotification = @"RCCViewControllerCancelReactTouchesNotification";
 
@@ -280,7 +288,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     [super viewDidLayoutSubviews];
 
     RCTRootView *view = (RCTRootView *)self.view;
-    if (!@available(iOS 11, *) &&
+    if ((!@available(iOS 11, *) || isiPhoneX()) &&
         self.tabBarController != nil &&
         self.navigationController.childViewControllers.count == 1 &&
         self.navigationController.childViewControllers.firstObject == self &&
@@ -310,7 +318,7 @@ const NSInteger TRANSPARENT_NAVBAR_TAG = 78264803;
     // The calling sequence is viewDidAppear -> viewDidLayouyt -> viewDidLayout
     // And the original reactTag is reset back in viewDidLayoutSubview
     
-    if (!@available(iOS 11, *) &&
+    if ((!@available(iOS 11, *) || isiPhoneX()) &&
         animated &&
         self.tabBarController != nil &&
         self.isPopping &&
