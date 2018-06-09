@@ -349,6 +349,9 @@
                             options: (hidden ? UIViewAnimationOptionCurveEaseIn : UIViewAnimationOptionCurveEaseOut)
                          animations:^()
          {
+             CGRect viewFrame = self.selectedViewController.view.frame;
+             viewFrame.size.height = CGRectGetHeight(viewFrame) + (hidden ? CGRectGetHeight(self.tabBar.frame) : -CGRectGetHeight(self.tabBar.frame));
+             self.selectedViewController.view.frame = viewFrame;
              [self.tabBar setFrame:nextFrame];
          }
                          completion:^(BOOL finished)

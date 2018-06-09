@@ -194,6 +194,13 @@ public class BottomTabsLayout extends BaseLayout implements AHBottomNavigation.O
 
     public void setBottomTabsVisible(boolean hidden, boolean animated) {
         getCurrentScreenStack().peek().updateBottomTabsVisibility(hidden);
+        LayoutParams lp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        if (hidden) {
+            getCurrentScreenStack().peek().setLayoutParams(lp);
+        } else {
+            lp.addRule(RelativeLayout.ABOVE, bottomTabs.getId());
+            getCurrentScreenStack().peek().setLayoutParams(lp);
+        }
         bottomTabs.setVisibility(hidden, animated);
     }
 
