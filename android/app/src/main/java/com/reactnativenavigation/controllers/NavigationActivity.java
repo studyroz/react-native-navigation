@@ -66,6 +66,8 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     private PermissionListener mPermissionListener;
     private boolean mFirstCreated = true;
 
+    private boolean killedBySystem = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,7 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
         if (!NavigationApplication.instance.getReactGateway().hasStartedCreatingContext() ||
                 getIntent() == null ||
                 getIntent().getBundleExtra("ACTIVITY_PARAMS_BUNDLE") == null) {
+            killedBySystem = true;
             SplashActivity.start(this);
             finish();
             return;
@@ -215,6 +218,9 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
     }
 
     private void destroyJsIfNeeded() {
+        if ( killedBySystem ) {
+            return;
+        }
         if (currentActivity == null || currentActivity.isFinishing()) {
             getReactGateway().onDestroyApp(this);
         }
