@@ -220,8 +220,12 @@ public class NavigationActivity extends AppCompatActivity implements DefaultHard
 
     private void destroyJsIfNeeded() {
         Log.e("killedBySystem value", killedBySystem + "");
-        if ( killedBySystem ) {
-            Log.e("killedBySystem return", "killedBySystem return");
+        if (killedBySystem) {
+            /**
+             * When the NavigationActivity is killed/restarted by the system, it's onCreate method launches the SplashActivity and kills itself.
+             * The new SplashActivity starts context initialization but that is broken in between by the onDestroy of the NavigationActivity we just killed.
+             * This fix adds a boolean to disable destruction of js in this case.
+             */
             return;
         }
         if (currentActivity == null || currentActivity.isFinishing()) {
