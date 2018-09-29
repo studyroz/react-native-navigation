@@ -304,7 +304,7 @@ public class ScreenStack {
     }
 
     public boolean canPop() {
-        return stack.size() > 1 && !isPreviousScreenAttachedToWindow()
+        return stack.size() > 1 && !isPreviousScreenAttachedToWindow();
     }
 
     private boolean canForcePop() {
