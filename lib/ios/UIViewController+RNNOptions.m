@@ -85,7 +85,33 @@ const NSInteger BLUR_STATUS_TAG = 78264801;
 	if ([badge isKindOfClass:[NSNull class]] || [badge isEqualToString:@""]) {
 		tabBarItem.badgeValue = nil;
 	} else {
-		tabBarItem.badgeValue = badge;
+		BOOL isDot = [badge isEqual:@"BADGE_DOT"];
+		if (isDot) {
+			tabBarItem.badgeValue = @" ";
+		} else {
+			tabBarItem.badgeValue = badge;
+		}
+		NSUInteger index = [self.tabBarController.tabBar.items indexOfObject:tabBarItem];
+		if (index == NSNotFound) {
+			return;
+		}
+		UIView *tabButton = nil;
+		NSUInteger iterator = 0;
+		for (UIView *view in self.tabBarController.tabBar.subviews) {
+			if ([NSStringFromClass(view.class) isEqualToString:@"UITabBarButton"]) {
+				if (iterator == index) {
+					tabButton = view;
+					break;
+				}
+				iterator += 1;
+			}
+		}
+		
+		for (UIView *view in tabButton.subviews) {
+			if ([NSStringFromClass(view.class) rangeOfString:@"Badge"].location != NSNotFound) {
+				view.transform = isDot ? CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5) : CGAffineTransformIdentity;
+			}
+		}
 	}
 }
 
