@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 @SuppressLint("ViewConstructor")
 public class TitleBar extends Toolbar {
-    public static final int DEFAULT_LEFT_MARGIN = 16;
+    public static final int DEFAULT_LEFT_MARGIN = 0;
 
     private TitleBarButtonController leftButtonController;
     private View component;
@@ -34,6 +34,12 @@ public class TitleBar extends Toolbar {
 
     public TitleBar(Context context) {
         super(context);
+
+        // 去掉Toolbar上的left margin
+        super.setContentInsetStartWithNavigation(0);
+        super.setContentInsetEndWithActions(0);
+        super.setContentInsetsAbsolute(0,0);
+
         getMenu();
         setContentDescription("titleBar");
     }

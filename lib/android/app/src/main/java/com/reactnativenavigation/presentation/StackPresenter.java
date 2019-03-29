@@ -467,7 +467,7 @@ public class StackPresenter {
     }
 
     private LayoutParams getComponentLayoutParams(com.reactnativenavigation.parse.Component component) {
-        return new Toolbar.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, component.alignment == Alignment.Center ? Gravity.CENTER : Gravity.START);
+        return new Toolbar.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, component.alignment == Alignment.Center ? Gravity.CENTER : Gravity.START);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
