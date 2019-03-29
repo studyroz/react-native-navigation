@@ -115,6 +115,7 @@ static NSString* const setDefaultOptions	= @"setDefaultOptions";
 	[self assertReady];
 	
 	UIViewController<RNNLayoutProtocol> *newVc = [_controllerFactory createLayout:layout];
+	newVc.hidesBottomBarWhenPushed = true;
 	UIViewController *fromVC = [_store findComponentForId:componentId];
 	
 	if ([[newVc.resolveOptions.preview.reactTag getWithDefaultValue:@(0)] floatValue] > 0) {
