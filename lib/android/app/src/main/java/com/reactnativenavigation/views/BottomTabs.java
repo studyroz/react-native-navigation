@@ -49,7 +49,11 @@ public class BottomTabs extends AHBottomNavigation {
     }
 
     public void setBadge(int bottomTabIndex, String badge) {
-        setNotification(badge, bottomTabIndex);
+        if (badge.equals("BADGE_DOT")) {
+            setNotification(" ", bottomTabIndex);
+        } else {
+            setNotification(badge, bottomTabIndex);
+        }
     }
 
     public void setBadgeColor(@ColorInt Integer color) {
