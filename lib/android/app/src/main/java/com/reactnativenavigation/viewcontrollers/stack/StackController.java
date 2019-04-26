@@ -40,6 +40,7 @@ public class StackController extends ParentController<StackLayout> {
     private TopBarController topBarController;
     private BackButtonHelper backButtonHelper;
     private final StackPresenter presenter;
+    private boolean didPush = true;
 
     public StackController(Activity activity, List<ViewController> children, ChildControllersRegistry childRegistry, TopBarController topBarController, NavigationAnimator animator, String id, Options initialOptions, BackButtonHelper backButtonHelper, StackPresenter stackPresenter, Presenter presenter) {
         super(activity, childRegistry, id, presenter, initialOptions);
@@ -151,6 +152,7 @@ public class StackController extends ParentController<StackLayout> {
     }
 
     public void push(ViewController child, CommandListener listener) {
+        didPush = false;
         final ViewController toRemove = stack.peek();
         if (size() > 0) backButtonHelper.addToPushedChild(child);
         child.setParentController(this);
@@ -165,6 +167,7 @@ public class StackController extends ParentController<StackLayout> {
                     child.addOnAppearedListener(() -> animator.push(child.getView(), resolvedOptions.animations.push, resolvedOptions.transitions, toRemove.getElements(), child.getElements(), () -> {
                         getView().removeView(toRemove.getView());
                         listener.onSuccess(child.getId());
+                        didPush = true;
                     }));
                 } else {
                     animator.push(child.getView(), resolvedOptions.animations.push, () -> {
@@ -172,14 +175,17 @@ public class StackController extends ParentController<StackLayout> {
                             getView().removeView(toRemove.getView());
                         }
                         listener.onSuccess(child.getId());
+                        didPush = true;
                     });
                 }
             } else {
                 getView().removeView(toRemove.getView());
                 listener.onSuccess(child.getId());
+                didPush = true;
             }
         } else {
             listener.onSuccess(child.getId());
+            didPush = true;
         }
     }
 
@@ -358,6 +364,9 @@ public class StackController extends ParentController<StackLayout> {
     }
 
     private void onNavigationButtonPressed(String buttonId) {
+        if (!didPush) {
+            return;
+        }
         if (Constants.BACK_BUTTON_ID.equals(buttonId)) {
             pop(Options.EMPTY, new CommandListenerAdapter());
         } else {

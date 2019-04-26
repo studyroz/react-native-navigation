@@ -1,4 +1,4 @@
-import { isArray } from 'lodash';
+import { isArray, throttle } from 'lodash';
 import { NativeCommandsSender } from './adapters/NativeCommandsSender';
 import { NativeEventsReceiver } from './adapters/NativeEventsReceiver';
 import { UniqueIdProvider } from './adapters/UniqueIdProvider';
@@ -38,7 +38,8 @@ export class NavigationRoot {
   private readonly commandsObserver: CommandsObserver;
   private readonly componentEventsObserver: ComponentEventsObserver;
   private readonly componentWrapper: ComponentWrapper;
-
+  private readonly throttedShowModal: (simpleApi: Layout) => Promise<any>;
+  private readonly throttedPush: (componentId: string, simpleApi: Layout) => Promise<any>;
   constructor() {
     this.componentWrapper = new ComponentWrapper();
     this.store = new Store();
@@ -68,6 +69,8 @@ export class NavigationRoot {
     this.eventsRegistry = new EventsRegistry(this.nativeEventsReceiver, this.commandsObserver, this.componentEventsObserver);
 
     this.componentEventsObserver.registerOnceForAllComponentEvents();
+    this.throttedShowModal = throttle(this.commands.showModal, 600, { trailing: false });
+    this.throttedPush = throttle(this.commands.push, 600, { trailing: false });
   }
 
   /**
@@ -116,7 +119,7 @@ export class NavigationRoot {
    * Show a screen as a modal.
    */
   public showModal<P>(layout: Layout<P>): Promise<any> {
-    return this.commands.showModal(layout);
+    return this.throttedShowModal(layout);
   }
 
   /**
@@ -137,7 +140,7 @@ export class NavigationRoot {
    * Push a new layout into this screen's navigation stack.
    */
   public push<P>(componentId: string, layout: Layout<P>): Promise<any> {
-    return this.commands.push(componentId, layout);
+    return this.throttedPush(componentId, layout);
   }
 
   /**
