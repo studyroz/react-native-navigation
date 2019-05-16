@@ -3,9 +3,9 @@
 
 @implementation RNNTabBarPresenter
 
-- (void)applyOptionsOnInit:(RNNNavigationOptions *)initialOptions {
+- (void)applyOptionsOnInit:(RNNNavigationOptions *)options {
 	UITabBarController* tabBarController = self.bindedViewController;
-	[tabBarController rnn_setCurrentTabIndex:[initialOptions.bottomTabs.currentTabIndex getWithDefaultValue:0]];
+	[tabBarController rnn_setCurrentTabIndex:[options.bottomTabs.currentTabIndex getWithDefaultValue:0]];
 }
 
 - (void)applyOptions:(RNNNavigationOptions *)options {
@@ -17,7 +17,7 @@
 	[tabBarController rnn_setTabBarHideShadow:[options.bottomTabs.hideShadow getWithDefaultValue:NO]];
 	[tabBarController rnn_setTabBarStyle:[RCTConvert UIBarStyle:[options.bottomTabs.barStyle getWithDefaultValue:@"default"]]];
 	if (options.bottomTabs.visible.hasValue) {
-		[tabBarController rnn_setTabBarVisible:[options.bottomTabs.visible getWithDefaultValue:YES]];
+        [tabBarController rnn_setTabBarVisible:[options.bottomTabs.visible getWithDefaultValue:YES] animated:[options.bottomTabs.animate getWithDefaultValue:NO]];
 	}
 }
 
@@ -57,7 +57,11 @@
 	}
 	
 	if (newOptions.bottomTabs.visible.hasValue) {
-		[tabBarController rnn_setTabBarVisible:newOptions.bottomTabs.visible.get];
+		if (newOptions.bottomTabs.animate.hasValue) {
+			[tabBarController rnn_setTabBarVisible:newOptions.bottomTabs.visible.get animated:[newOptions.bottomTabs.animate getWithDefaultValue:NO]];
+		} else {
+			[tabBarController rnn_setTabBarVisible:newOptions.bottomTabs.visible.get animated:NO];
+		}
 	}
 }
 
