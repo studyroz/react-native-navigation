@@ -167,7 +167,7 @@
 		_customTitleView = (RNNReactView*)[_componentRegistry createComponentIfNotExists:options.topBar.title.component parentComponentId:viewController.layoutInfo.componentId reactViewReadyBlock:readyBlock];
 		_customTitleView.backgroundColor = UIColor.clearColor;
 		NSString* alignment = [options.topBar.title.component.alignment getWithDefaultValue:@""];
-		[_customTitleView setAlignment:alignment inFrame:viewController.navigationController.navigationBar.frame];
+		[_customTitleView setAlignment:alignment inFrame:CGRectMake(8, 0, viewController.navigationController.navigationBar.bounds.size.width - 16, viewController.navigationController.navigationBar.bounds.size.height)];
 
 		viewController.navigationItem.titleView = nil;
 		viewController.navigationItem.titleView = _customTitleView;
