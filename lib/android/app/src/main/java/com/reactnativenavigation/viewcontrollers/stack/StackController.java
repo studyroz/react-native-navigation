@@ -21,11 +21,8 @@ import com.reactnativenavigation.viewcontrollers.ChildControllersRegistry;
 import com.reactnativenavigation.viewcontrollers.IdStack;
 import com.reactnativenavigation.viewcontrollers.ParentController;
 import com.reactnativenavigation.viewcontrollers.ViewController;
-import com.reactnativenavigation.viewcontrollers.topbar.TopBarController;
 import com.reactnativenavigation.views.Component;
 import com.reactnativenavigation.views.ReactComponent;
-import com.reactnativenavigation.views.StackLayout;
-import com.reactnativenavigation.views.topbar.TopBar;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,18 +30,16 @@ import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-public class StackController extends ParentController<StackLayout> {
+public class StackController extends ParentController<RelativeLayout> {
 
     private final IdStack<ViewController> stack = new IdStack<>();
     private final NavigationAnimator animator;
-    private TopBarController topBarController;
     private BackButtonHelper backButtonHelper;
-    private final StackPresenter presenter;
+    public final StackPresenter presenter;
     private boolean didPush = true;
 
-    public StackController(Activity activity, List<ViewController> children, ChildControllersRegistry childRegistry, TopBarController topBarController, NavigationAnimator animator, String id, Options initialOptions, BackButtonHelper backButtonHelper, StackPresenter stackPresenter, Presenter presenter) {
+    public StackController(Activity activity, List<ViewController> children, ChildControllersRegistry childRegistry, NavigationAnimator animator, String id, Options initialOptions, BackButtonHelper backButtonHelper, StackPresenter stackPresenter, Presenter presenter) {
         super(activity, childRegistry, id, presenter, initialOptions);
-        this.topBarController = topBarController;
         this.animator = animator;
         this.backButtonHelper = backButtonHelper;
         this.presenter = stackPresenter;
@@ -108,6 +103,7 @@ public class StackController extends ParentController<StackLayout> {
                         child
                 )
         );
+
     }
 
     @Override
@@ -134,24 +130,20 @@ public class StackController extends ParentController<StackLayout> {
     }
 
     @Override
-    public void destroy() {
-        topBarController.clear();
-        super.destroy();
-    }
-
-    @Override
-    public void clearOptions() {
-        super.clearOptions();
-        topBarController.clear();
-    }
-
-    @Override
     public void onChildDestroyed(Component child) {
         super.onChildDestroyed(child);
         presenter.onChildDestroyed(child);
     }
 
+    private void updatePresenter(ViewController child) {
+        if (child instanceof StackComponentController) {
+            StackComponentController componentController = (StackComponentController) child;
+            presenter.bindView(componentController.topBarController.getView());
+        }
+    }
+
     public void push(ViewController child, CommandListener listener) {
+        updatePresenter(child);
         didPush = false;
         final ViewController toRemove = stack.peek();
         if (size() > 0) backButtonHelper.addToPushedChild(child);
@@ -194,7 +186,7 @@ public class StackController extends ParentController<StackLayout> {
         child.setWaitForRender(resolvedOptions.animations.push.waitForRender);
         presenter.applyLayoutParamsOptions(resolvedOptions, view);
         if (size() == 1) presenter.applyInitialChildLayoutOptions(resolvedOptions);
-        getView().addView(view, getView().getChildCount() - 1);
+        getView().addView(view);
     }
 
     public void setRoot(List<ViewController> children, CommandListener listener) {
@@ -250,6 +242,7 @@ public class StackController extends ParentController<StackLayout> {
 
         final ViewController disappearing = stack.pop();
         final ViewController appearing = stack.peek();
+        updatePresenter(appearing);
 
         disappearing.onViewWillDisappear();
         appearing.onViewWillAppear();
@@ -346,20 +339,23 @@ public class StackController extends ParentController<StackLayout> {
 
     @NonNull
     @Override
-    protected StackLayout createView() {
-        StackLayout stackLayout = new StackLayout(getActivity(), topBarController, getId());
-        presenter.bindView(topBarController.getView());
+    protected RelativeLayout createView() {
+        RelativeLayout stackLayout = new RelativeLayout(getActivity());
         addInitialChild(stackLayout);
         return stackLayout;
     }
 
-    private void addInitialChild(StackLayout stackLayout) {
+    private void addInitialChild(RelativeLayout stackLayout) {
         if (isEmpty()) return;
         ViewGroup child = peek().getView();
         child.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         Options options = resolveCurrentOptions();
         presenter.applyLayoutParamsOptions(options, child);
-        presenter.applyInitialChildLayoutOptions(options);
+        if (peek() instanceof StackComponentController) {
+            StackComponentController controller = (StackComponentController) peek();
+            presenter.bindView(controller.topBarController.getView());
+            presenter.applyInitialChildLayoutOptions(options);
+        }
         stackLayout.addView(child, 0);
     }
 
@@ -387,21 +383,21 @@ public class StackController extends ParentController<StackLayout> {
 
     @Override
     public void setupTopTabsWithViewPager(ViewPager viewPager) {
-        topBarController.initTopTabs(viewPager);
+//        topBarController.initTopTabs(viewPager);
     }
 
     @Override
     public void clearTopTabs() {
-        topBarController.clearTopTabs();
+//        topBarController.clearTopTabs();
     }
 
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public TopBar getTopBar() {
-        return topBarController.getView();
-    }
+//    @RestrictTo(RestrictTo.Scope.TESTS)
+//    public TopBar getTopBar() {
+//        return topBarController.getView();
+//    }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public StackLayout getStackLayout() {
+    public RelativeLayout getStackLayout() {
         return getView();
     }
 }

@@ -94,6 +94,9 @@ public class ComponentLayout extends FrameLayout implements ReactComponent, Titl
 
     @Override
     public void drawBelowTopBar(TopBar topBar) {
+        if (topBar == null) {
+            return;
+        }
         if (getLayoutParams() instanceof RelativeLayout.LayoutParams) {
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
             layoutParams.topMargin = ViewUtils.getHeight(topBar);

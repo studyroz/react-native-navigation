@@ -21,6 +21,7 @@ import com.reactnativenavigation.viewcontrollers.bottomtabs.BottomTabsController
 import com.reactnativenavigation.viewcontrollers.externalcomponent.ExternalComponentCreator;
 import com.reactnativenavigation.viewcontrollers.externalcomponent.ExternalComponentViewController;
 import com.reactnativenavigation.viewcontrollers.sidemenu.SideMenuController;
+import com.reactnativenavigation.viewcontrollers.stack.StackComponentController;
 import com.reactnativenavigation.viewcontrollers.stack.StackControllerBuilder;
 import com.reactnativenavigation.viewcontrollers.topbar.TopBarController;
 import com.reactnativenavigation.viewcontrollers.toptabs.TopTabsController;
@@ -59,7 +60,7 @@ public class LayoutFactory {
 	public ViewController create(final LayoutNode node) {
 		switch (node.type) {
 			case Component:
-				return createComponent(node);
+				return createStackComponent(node);
             case ExternalComponent:
                 return createExternalComponent(node);
 			case Stack:
@@ -80,6 +81,22 @@ public class LayoutFactory {
 				throw new IllegalArgumentException("Invalid node type: " + node.type);
 		}
 	}
+
+    private ViewController createStackComponent(LayoutNode node) {
+        String id = node.id;
+        String name = node.data.optString("name");
+        return new StackComponentController(activity,
+                childRegistry,
+                id,
+                name,
+                new ComponentViewCreator(reactInstanceManager),
+                parse(typefaceManager, node.getOptions()),
+                new Presenter(activity, defaultOptions),
+                new ComponentPresenter(defaultOptions),
+                new TopBarController()
+        );
+    }
+
 
     private ViewController createSideMenuRoot(LayoutNode node) {
 		SideMenuController sideMenuController = new SideMenuController(activity,
@@ -167,7 +184,6 @@ public class LayoutFactory {
         return new StackControllerBuilder(activity)
                 .setChildren(createChildren(node.children))
                 .setChildRegistry(childRegistry)
-                .setTopBarController(new TopBarController())
                 .setId(node.id)
                 .setInitialOptions(parse(typefaceManager, node.getOptions()))
                 .setStackPresenter(new StackPresenter(activity,

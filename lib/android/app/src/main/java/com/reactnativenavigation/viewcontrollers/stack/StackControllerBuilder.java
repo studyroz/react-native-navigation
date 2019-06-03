@@ -16,7 +16,6 @@ import java.util.*;
 public class StackControllerBuilder {
     private Activity activity;
     private ChildControllersRegistry childRegistry;
-    private TopBarController topBarController;
     private String id;
     private Options initialOptions = new Options();
     private NavigationAnimator animator;
@@ -55,11 +54,6 @@ public class StackControllerBuilder {
         return this;
     }
 
-    public StackControllerBuilder setTopBarController(TopBarController topBarController) {
-        this.topBarController = topBarController;
-        return this;
-    }
-
     public StackControllerBuilder setId(String id) {
         this.id = id;
         return this;
@@ -84,7 +78,6 @@ public class StackControllerBuilder {
         return new StackController(activity,
                 children,
                 childRegistry,
-                topBarController,
                 animator,
                 id,
                 initialOptions,
