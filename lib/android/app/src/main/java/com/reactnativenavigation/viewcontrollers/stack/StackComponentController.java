@@ -49,6 +49,12 @@ public class StackComponentController extends ChildController<StackLayout> {
     }
 
     @Override
+    public void setDefaultOptions(Options defaultOptions) {
+        super.setDefaultOptions(defaultOptions);
+        presenter.setDefaultOptions(defaultOptions);
+    }
+
+    @Override
     public void onViewAppeared() {
         updatePresenter();
         super.onViewAppeared();
@@ -101,7 +107,7 @@ public class StackComponentController extends ChildController<StackLayout> {
         ComponentLayout child = (ComponentLayout) viewCreator.create(getActivity(), getId(), componentName);
         StackLayout stackLayout = new StackLayout(getActivity(), topBarController, getId(), child);
         child.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        Options options = resolveCurrentOptions();
+        Options options = resolveCurrentOptions(presenter.defaultOptions);
         child.applyOptions(options);
         setInitialTopBarVisibility(options.topBar);
         stackLayout.addView(child, 0);
