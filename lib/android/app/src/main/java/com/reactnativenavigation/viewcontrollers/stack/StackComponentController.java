@@ -98,7 +98,7 @@ public class StackComponentController extends ChildController<StackLayout> {
         if (options == Options.EMPTY) return;
         super.mergeOptions(options);
         presenter.mergeOptions(child, options);
-        performOnParentController(parentController -> parentController.mergeChildOptions(options, this, child));
+        performOnParentController(parentController -> parentController.mergeChildOptions(options, this, getView()));
     }
 
     @NonNull
