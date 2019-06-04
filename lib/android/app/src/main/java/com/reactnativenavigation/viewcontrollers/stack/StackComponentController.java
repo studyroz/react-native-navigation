@@ -104,14 +104,16 @@ public class StackComponentController extends ChildController<StackLayout> {
     @NonNull
     @Override
     protected StackLayout createView() {
+        StackLayout stackLayout = new StackLayout(getActivity(), topBarController, getId());
+        updatePresenter();
+
         ComponentLayout child = (ComponentLayout) viewCreator.create(getActivity(), getId(), componentName);
-        StackLayout stackLayout = new StackLayout(getActivity(), topBarController, getId(), child);
+        stackLayout.setChild(child);
         child.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         Options options = resolveCurrentOptions(presenter.defaultOptions);
         child.applyOptions(options);
         setInitialTopBarVisibility(options.topBar);
         stackLayout.addView(child, 0);
-        updatePresenter();
         this.child = child;
         return stackLayout;
     }

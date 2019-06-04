@@ -16,9 +16,8 @@ public class StackLayout extends RelativeLayout implements Component {
     private String stackId;
     private Component child;
 
-    public StackLayout(Context context, TopBarController topBarController, String stackId, Component child) {
+    public StackLayout(Context context, TopBarController topBarController, String stackId) {
         super(context);
-        this.child = child;
         this.stackId = stackId;
         createLayout(topBarController);
         setContentDescription("StackLayout");
@@ -29,6 +28,14 @@ public class StackLayout extends RelativeLayout implements Component {
                 MATCH_PARENT,
                 UiUtils.getTopBarHeight(getContext())
         );
+    }
+
+    public Component getChild() {
+        return child;
+    }
+
+    public void setChild(Component child) {
+        this.child = child;
     }
 
     public String getStackId() {
