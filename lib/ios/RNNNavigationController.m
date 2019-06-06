@@ -21,10 +21,6 @@ const NSInteger TOP_BAR_TRANSPARENT_TAG = 78264803;
 	return self.getCurrentChild.supportedInterfaceOrientations;
 }
 
-- (UINavigationController *)navigationController {
-	return self;
-}
-
 - (UIStatusBarStyle)preferredStatusBarStyle {
 	return self.getCurrentChild.preferredStatusBarStyle;
 }
