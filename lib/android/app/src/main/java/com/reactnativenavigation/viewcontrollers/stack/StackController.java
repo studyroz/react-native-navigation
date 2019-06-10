@@ -138,7 +138,7 @@ public class StackController extends ParentController<RelativeLayout> {
     private void updatePresenter(ViewController child) {
         if (child instanceof StackComponentController) {
             StackComponentController componentController = (StackComponentController) child;
-            presenter.bindView(componentController.topBarController.getView());
+            presenter.bindView(componentController.getTopBarController().getView());
         }
     }
 
@@ -354,7 +354,7 @@ public class StackController extends ParentController<RelativeLayout> {
         presenter.applyLayoutParamsOptions(options, child);
         if (peek() instanceof StackComponentController) {
             StackComponentController controller = (StackComponentController) peek();
-            presenter.bindView(controller.topBarController.getView());
+            presenter.bindView(controller.getTopBarController().getView());
             presenter.applyInitialChildLayoutOptions(options);
         }
         stackLayout.addView(child, 0);

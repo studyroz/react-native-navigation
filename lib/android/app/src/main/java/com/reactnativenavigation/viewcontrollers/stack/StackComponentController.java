@@ -25,7 +25,7 @@ import com.reactnativenavigation.views.StackLayout;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class StackComponentController extends ChildController<StackLayout> {
-    public TopBarController topBarController;
+    private TopBarController topBarController;
     private final String componentName;
     private final ReactViewCreator viewCreator;
     private ComponentLayout child;
@@ -48,6 +48,10 @@ public class StackComponentController extends ChildController<StackLayout> {
         this.presenter = componentPresenter;
     }
 
+    public TopBarController getTopBarController() {
+        return topBarController;
+    }
+
     @Override
     public void setDefaultOptions(Options defaultOptions) {
         super.setDefaultOptions(defaultOptions);
@@ -58,18 +62,25 @@ public class StackComponentController extends ChildController<StackLayout> {
     public void onViewAppeared() {
         updatePresenter();
         super.onViewAppeared();
-        child.sendComponentStart();
+        if (child != null) {
+            child.sendComponentStart();
+        }
     }
 
     @Override
     public void onViewDisappear() {
-        child.sendComponentStop();
+        if (child != null) {
+            child.sendComponentStop();
+        }
         super.onViewDisappear();
     }
 
     @Override
     public void destroy() {
         topBarController.clear();
+        if (child != null) {
+            child.destroy();
+        }
         super.destroy();
     }
 
@@ -84,7 +95,9 @@ public class StackComponentController extends ChildController<StackLayout> {
     @Override
     public void applyOptions(Options options) {
         super.applyOptions(options);
-        child.applyOptions(options);
+        if (child != null) {
+            child.applyOptions(options);
+        }
         presenter.applyOptions(child, resolveCurrentOptions(presenter.defaultOptions));
     }
 
@@ -97,7 +110,9 @@ public class StackComponentController extends ChildController<StackLayout> {
     public void mergeOptions(Options options) {
         if (options == Options.EMPTY) return;
         super.mergeOptions(options);
-        presenter.mergeOptions(child, options);
+        if (child != null) {
+            presenter.mergeOptions(child, options);
+        }
         performOnParentController(parentController -> parentController.mergeChildOptions(options, this, getView()));
     }
 
@@ -120,10 +135,10 @@ public class StackComponentController extends ChildController<StackLayout> {
 
     @Override
     public void sendOnNavigationButtonPressed(String buttonId) {
-        child.sendOnNavigationButtonPressed(buttonId);
+        if (child != null) {
+            child.sendOnNavigationButtonPressed(buttonId);
+        }
     }
-
-
 
     private void setInitialTopBarVisibility(TopBarOptions options) {
         if (options.visible.isFalse()) {
