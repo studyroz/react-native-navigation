@@ -1,4 +1,46 @@
 # Changelog
+# 2.21.0
+## Added
+* Title topMargin option [#069cb85](https://github.com/wix/react-native-navigation/commit/069cb85132dcc441c27c56e0f25e475c1d44eef2) by [guyca](https://github.com/guyca)
+
+## Fixed
+* Safer check around component listener trigger [#51d1b66](https://github.com/wix/react-native-navigation/commit/51d1b6676027c38d439dff03d23660ac8d617a5a) by [dozoisch](https://github.com/dozoisch)
+### Android
+* Emit SideMenu visibility events [#7ee9c12](https://github.com/wix/react-native-navigation/commit/7ee9c12d53dffe3461a3c4f6721619f9ceb5eb91) by [guyca](https://github.com/guyca)
+* Fix setStackRoot crash when called with the same id  [#3c08b1c](https://github.com/wix/react-native-navigation/commit/3c08b1c99559a3485fb8661ca98ce256db59adb8) by [guyca](https://github.com/guyca)
+* Fix crashes related to race conditions around ViewController.destroy  [#f2e46ea](https://github.com/wix/react-native-navigation/commit/f2e46ea4e7f6a32164ce0a0b1e1b697544177f33) by [guyca](https://github.com/guyca)
+
+# 2.20.2
+## Fixed
+### iOS
+* Fixed missing TopBar React component background [#d2d5d0f](https://github.com/wix/react-native-navigation/commit/d2d5d0fe7951e2c0c1e8d9fba247de392793a73b) by [yogevbd](https://github.com/yogevbd)
+
+# 2.20.1
+## Fixed
+* Include PassProps in ComponentDidAppearListener [#c226a7d](https://github.com/wix/react-native-navigation/commit/c226a7d55193c9c630e102dce35bc02243222921) by [yogevbd](https://github.com/yogevbd)
+
+# 2.20.0
+## Fixed
+* Include PassProps in layout parameter of CommandListener [#d3d01c2](https://github.com/wix/react-native-navigation/commit/d3d01c221f6c63ac36d8ef13a66e03fab980cf9f) by [yogevbd](https://github.com/yogevbd)
+### Android
+* Fix TopBar background React component flicker when pushing screens [#99032e0](https://github.com/wix/react-native-navigation/commit/99032e060d2e0a429d3da2775884f624e8cd5fd5) by [FRizzonelli](https://github.com/FRizzonelli)
+
+# 2.19.1
+## Fixed
+### Android
+* Fix missing absolute positioned views [#ecadcb0](https://github.com/wix/react-native-navigation/commit/ecadcb0f352d5c96944966deb09a7c2d570ccb2d) by [guyca](https://github.com/guyca)
+
+# 2.19.0
+## Added
+* Add passProps to component typings file [#42fd86d](https://github.com/wix/react-native-navigation/commit/42fd86d654feac83177c272b19276e71c08ef75a) by [Andarius](https://github.com/Andarius)
+* Add missing topBar options [#5566ffd](https://github.com/wix/react-native-navigation/commit/5566ffd47c65f7bfc608f3a0f0b19814039b541e) by [retyui](https://github.com/retyui)
+
+## Fixed
+### iOS
+* Fixes broken modals animations [#42e26d7](https://github.com/wix/react-native-navigation/commit/42e26d77b8d231debe0489dbe874fc06d9a97589) by [yogevbd](https://github.com/yogevbd)
+
+### Android
+* Fixed buggy currentTabIndex when calling setRoot multiple times [#cd182f4](https://github.com/wix/react-native-navigation/commit/cd182f4693a6a4bd943eddf9a15706d943c88d4e) by [guyca](https://github.com/guyca)
 
 # 2.18.5
 ## Fixed

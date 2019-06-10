@@ -14,7 +14,6 @@ import com.reactnativenavigation.parse.Options;
 import com.reactnativenavigation.presentation.Presenter;
 import com.reactnativenavigation.presentation.StackPresenter;
 import com.reactnativenavigation.react.Constants;
-import com.reactnativenavigation.utils.CollectionUtils;
 import com.reactnativenavigation.utils.CommandListener;
 import com.reactnativenavigation.utils.CommandListenerAdapter;
 import com.reactnativenavigation.viewcontrollers.ChildControllersRegistry;
@@ -29,10 +28,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static com.reactnativenavigation.utils.CollectionUtils.*;
 
 public class StackController extends ParentController<RelativeLayout> {
 
-    private final IdStack<ViewController> stack = new IdStack<>();
+    private IdStack<ViewController> stack = new IdStack<>();
     private final NavigationAnimator animator;
     private BackButtonHelper backButtonHelper;
     public final StackPresenter presenter;
@@ -54,6 +54,7 @@ public class StackController extends ParentController<RelativeLayout> {
     @Override
     public boolean isRendered() {
         if (isEmpty()) return false;
+        if (getCurrentChild().isDestroyed()) return false;
         ViewGroup currentChild = getCurrentChild().getView();
         if (currentChild instanceof Component) {
             return super.isRendered() && presenter.isRendered((Component) currentChild);
@@ -74,7 +75,7 @@ public class StackController extends ParentController<RelativeLayout> {
 
     @Override
     public void onAttachToParent() {
-        if (!isViewShown() && !isEmpty()) {
+        if (!isEmpty() && !getCurrentChild().isDestroyed() && !isViewShown()) {
             presenter.applyChildOptions(resolveCurrentOptions(), (Component) getCurrentChild().getView());
         }
     }
@@ -192,20 +193,22 @@ public class StackController extends ParentController<RelativeLayout> {
 
     public void setRoot(List<ViewController> children, CommandListener listener) {
         animator.cancelPushAnimations();
+        IdStack stackToDestroy = stack;
+        stack = new IdStack<>();
         if (children.size() == 1) {
-            backButtonHelper.clear(CollectionUtils.last(children));
-            push(CollectionUtils.last(children), new CommandListenerAdapter() {
+            backButtonHelper.clear(last(children));
+            push(last(children), new CommandListenerAdapter() {
                 @Override
                 public void onSuccess(String childId) {
-                    removeChildrenBellowTop();
+                    destroyStack(stackToDestroy);
                     listener.onSuccess(childId);
                 }
             });
         } else {
-            push(CollectionUtils.last(children), new CommandListenerAdapter() {
+            push(last(children), new CommandListenerAdapter() {
                 @Override
                 public void onSuccess(String childId) {
-                    removeChildrenBellowTop();
+                    destroyStack(stackToDestroy);
                     for (int i = 0; i < children.size() - 1; i++) {
                         stack.set(children.get(i).getId(), children.get(i), i);
                         children.get(i).setParentController(StackController.this);
@@ -221,14 +224,9 @@ public class StackController extends ParentController<RelativeLayout> {
         }
     }
 
-    private void removeChildrenBellowTop() {
-        Iterator<String> iterator = stack.iterator();
-        while (stack.size() > 1) {
-            ViewController controller = stack.get(iterator.next());
-            if (!stack.isTop(controller.getId())) {
-                stack.remove(iterator, controller.getId());
-                controller.destroy();
-            }
+    private void destroyStack(IdStack stack) {
+        for (String s : (Iterable<String>) stack) {
+            ((ViewController) stack.get(s)).destroy();
         }
     }
 
