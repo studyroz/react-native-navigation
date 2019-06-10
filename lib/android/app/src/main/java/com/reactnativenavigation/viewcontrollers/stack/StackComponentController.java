@@ -77,7 +77,6 @@ public class StackComponentController extends ChildController<StackLayout> {
 
     @Override
     public void destroy() {
-        topBarController.clear();
         if (child != null) {
             child.destroy();
         }
