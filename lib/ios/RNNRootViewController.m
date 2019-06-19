@@ -73,12 +73,14 @@
 	
 	__block RNNReactViewReadyCompletionBlock readyBlockCopy = readyBlock;
 	UIView* reactView = [self.creator createRootView:self.layoutInfo.name rootViewId:self.layoutInfo.componentId availableSize:[UIScreen mainScreen].bounds.size reactViewReadyBlock:^{
-		[_presenter renderComponents:self.resolveOptions perform:^{
-			if (readyBlockCopy) {
-				readyBlockCopy();
-				readyBlockCopy = nil;
-			}
-		}];
+		if (![_presenter isKindOfClass:[RNNViewControllerPresenter class]]) {
+			[_presenter renderComponents:self.resolveOptions perform:^{
+				if (readyBlockCopy) {
+					readyBlockCopy();
+					readyBlockCopy = nil;
+				}
+			}];
+		}
 	}];
 	
 	self.view = reactView;
