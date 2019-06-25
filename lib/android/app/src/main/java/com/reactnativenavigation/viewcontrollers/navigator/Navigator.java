@@ -128,7 +128,7 @@ public class Navigator extends ParentController {
     }
 
     public void setRoot(final ViewController viewController, CommandListener commandListener, ReactInstanceManager reactInstanceManager) {
-        destroyRoot();
+        destroyViews();
         final boolean removeSplashView = isRootNotCreated();
         if (isRootNotCreated()) getView();
         root = viewController;
