@@ -33,11 +33,11 @@ typedef void (^RNNAnimationBlock)(void);
 		animated = NO;
 	}
 	
-	__block UIViewController *poppedVC = nil;
+	__block BOOL popped = false;
 	[self performAnimationBlock:^{
-		poppedVC = [viewController.navigationController popViewControllerAnimated:animated];
+		popped = ([viewController.navigationController popViewControllerAnimated:animated] != nil);
 	} completion:^{
-		if (poppedVC) {
+		if (popped) {
 			completion();
 		} else {
 			[RNNErrorHandler reject:rejection withErrorCode:1012 errorDescription:@"popping component failed"];
