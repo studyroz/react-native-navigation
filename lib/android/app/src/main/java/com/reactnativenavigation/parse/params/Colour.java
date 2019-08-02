@@ -1,6 +1,6 @@
 package com.reactnativenavigation.parse.params;
 
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 public class Colour extends Param<Integer>{
 

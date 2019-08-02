@@ -1,7 +1,7 @@
 package com.reactnativenavigation.viewcontrollers.modal;
 
 import android.app.Activity;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.RestrictTo;
 import android.view.ViewGroup;
 
 import com.reactnativenavigation.anim.ModalAnimator;

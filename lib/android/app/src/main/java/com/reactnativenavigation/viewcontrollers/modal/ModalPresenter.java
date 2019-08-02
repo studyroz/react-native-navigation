@@ -2,7 +2,7 @@ package com.reactnativenavigation.viewcontrollers.modal;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.ViewGroup;
 
 import com.reactnativenavigation.anim.ModalAnimator;

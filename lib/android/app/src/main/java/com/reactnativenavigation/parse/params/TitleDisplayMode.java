@@ -1,10 +1,9 @@
 package com.reactnativenavigation.parse.params;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation.TitleState;
-
-import javax.annotation.Nullable;
 
 public enum TitleDisplayMode {
     ALWAYS_SHOW(TitleState.ALWAYS_SHOW), SHOW_WHEN_ACTIVE(TitleState.SHOW_WHEN_ACTIVE), ALWAYS_HIDE(TitleState.ALWAYS_HIDE), UNDEFINED(null);

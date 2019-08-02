@@ -1,8 +1,8 @@
 package com.reactnativenavigation.viewcontrollers.bottomtabs;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;

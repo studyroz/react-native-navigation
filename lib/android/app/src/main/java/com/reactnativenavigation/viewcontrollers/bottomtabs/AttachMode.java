@@ -1,6 +1,6 @@
 package com.reactnativenavigation.viewcontrollers.bottomtabs;
 
-import android.support.annotation.*;
+import androidx.annotation.VisibleForTesting;
 import android.view.*;
 import android.widget.*;
 

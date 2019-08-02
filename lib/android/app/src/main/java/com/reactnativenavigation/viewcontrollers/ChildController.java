@@ -1,7 +1,7 @@
 package com.reactnativenavigation.viewcontrollers;
 
 import android.app.Activity;
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 import android.view.ViewGroup;
 
 import com.reactnativenavigation.parse.Options;
