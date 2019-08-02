@@ -1,7 +1,7 @@
 package com.reactnativenavigation.presentation;
 
 import android.graphics.Color;
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 
