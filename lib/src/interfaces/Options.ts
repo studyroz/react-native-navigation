@@ -91,7 +91,8 @@ export enum OptionsModalPresentationStyle {
   currentContext = 'currentContext',
   popOver = 'popOver',
   fullScreen = 'fullScreen',
-  none = 'none'
+  none = 'none',
+  automatic = 'automatic'
 }
 
 export enum OptionsModalTransitionStyle {
