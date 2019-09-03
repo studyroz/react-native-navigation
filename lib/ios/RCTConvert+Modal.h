@@ -16,7 +16,9 @@ RCT_ENUM_CONVERTER(UIModalTransitionStyle,
 RCT_ENUM_CONVERTER(UIModalPresentationStyle,
 				   ([self PresentationStyle]), UIModalPresentationFullScreen, integerValue)
 
-+ (NSDictionary *)PresentationStyle { // 如果是iOS13 使用新的Modal样式
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >=  130000 // iOS 13以上的系统版本 增加一种modal Automatic样式
++ (NSDictionary *)PresentationStyle {
     if (@available(iOS 13.0, *)) {
         return @{
                 @"fullScreen": @(UIModalPresentationFullScreen),
@@ -45,5 +47,22 @@ RCT_ENUM_CONVERTER(UIModalPresentationStyle,
                 };
     }
 }
+#else
++ (NSDictionary *)PresentationStyle {
+        return @{
+                @"fullScreen": @(UIModalPresentationFullScreen),
+                @"pageSheet": @(UIModalPresentationPageSheet),
+                @"formSheet": @(UIModalPresentationFormSheet),
+                @"currentContext": @(UIModalPresentationCurrentContext),
+                @"custom": @(UIModalPresentationCustom),
+                @"overFullScreen": @(UIModalPresentationOverFullScreen),
+                @"overCurrentContext": @(UIModalPresentationOverCurrentContext),
+                @"popover": @(UIModalPresentationPopover),
+                @"none": @(UIModalPresentationNone),
+                @"automatic":@(UIModalPresentationFullScreen),
+                };
+}
+#endif
+
 @end
 
