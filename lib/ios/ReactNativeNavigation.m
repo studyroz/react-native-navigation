@@ -63,7 +63,7 @@
 
 - (UIWindow *)initializeKeyWindow {
 	UIWindow* keyWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-	keyWindow.backgroundColor = [UIColor whiteColor];
+	keyWindow.backgroundColor = [UIColor blackColor];
 	UIApplication.sharedApplication.delegate.window = keyWindow;
 	
 	return keyWindow;
