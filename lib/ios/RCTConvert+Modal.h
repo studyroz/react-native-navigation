@@ -17,7 +17,7 @@ RCT_ENUM_CONVERTER(UIModalPresentationStyle,
 				   ([self PresentationStyle]), UIModalPresentationFullScreen, integerValue)
 
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >=  130000 // iOS 13以上的系统版本 增加一种modal Automatic样式
+#if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0 // iOS 13以上的系统版本 增加一种modal Automatic样式
 + (NSDictionary *)PresentationStyle {
     if (@available(iOS 13.0, *)) {
         return @{
